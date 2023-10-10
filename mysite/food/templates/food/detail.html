@@ -1,0 +1,17 @@
+{% extends "food/base.html" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="card" height="300px" width="400px" src={{ item.item_image }} alt="https://static.wixstatic.com/media/bf242e_6133b4ae6a104cc2b50d70179f35efea~mv2.jpg/v1/fill/w_350,h_263,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/food-placeholder.jpg" />
+            </div>
+            <div class="col-md-6">
+                <h1>{{ item.item_name }}</h1>
+                <h2>{{ item.item_desc }}</h2>
+                <h3>${{ item.item_price }}</h3>
+            </div>
+        </div>
+    </div>
+    <a  href="{% url "food:update_item" item.id %}" class="btn btn-warning">Edit</a>
+    <a  href="{% url "food:delete_item" item.id %}" class="btn btn-danger">Delete</a>
+{% endblock body %}

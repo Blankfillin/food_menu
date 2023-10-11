@@ -1,5 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    DeleteView,
+    UpdateView,
+)
 from .models import Item
 from .forms import ItemForm
 
@@ -12,6 +20,12 @@ def index(request):
     return render(request, "food/index.html", context)
 
 
+class IndexListView(ListView):
+    model = Item
+    template_name = "food/index.html"
+    context_object_name = "item_list"
+
+
 def item(request):
     return HttpResponse("<h1>This is an item view<h1>")
 
@@ -20,6 +34,12 @@ def detail(request, item_id):
     item = Item.objects.get(pk=item_id)
     context = {"item": item}
     return render(request, "food/detail.html", context)
+
+
+class FoodDetailView(DetailView):
+    model = Item
+    template_name = "food/detail.html"
+    context_object_name = "item"
 
 
 def create_item(request):
@@ -34,6 +54,18 @@ def create_item(request):
     return render(request, "food/item-form.html", content)
 
 
+class FoodCreateView(CreateView):
+    model = Item
+    fields = ["item_name", "item_desc", "item_price", "item_image"]
+    template_name = "food/item-form.html"
+    success_url = reverse_lazy("food:index")
+
+    def form_valid(self, form):
+        form.instance.added_by = self.request.user
+        return super(FoodCreateView,self).form_valid(form)
+    
+
+
 def update_item(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
     form = ItemForm(request.POST or None, instance=item)
@@ -45,6 +77,15 @@ def update_item(request, item_id):
     content = {"form": form}
     return render(request, "food/item-form.html", content)
 
+class FoodUpdateView(UpdateView):
+    model = Item
+    fields = ["item_name", "item_desc", "item_price", "item_image"]
+    template_name = "food/item-form.html"
+    success_url = reverse_lazy("food:index")
+
+    def form_valid(self, form):
+        form.instance.added_by = self.request.user
+        return super(FoodUpdateView,self).form_valid(form)
 
 def delete_item(request, item_id):
     item = Item.objects.get(id=item_id)
@@ -55,3 +96,9 @@ def delete_item(request, item_id):
 
     content = {"item": item}
     return render(request, "food/item-delete.html", content)
+
+
+class FoodDeleteView(DeleteView):
+    model = Item
+    template_name = "food/item-delete.html"
+    success_url = reverse_lazy("food:index")

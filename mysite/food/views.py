@@ -56,7 +56,7 @@ def create_item(request):
 
 class FoodCreateView(CreateView):
     model = Item
-    fields = ["item_name", "item_desc", "item_price", "item_image"]
+    form_class = ItemForm
     template_name = "food/item-form.html"
     success_url = reverse_lazy("food:index")
 

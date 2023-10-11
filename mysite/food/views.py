@@ -58,7 +58,6 @@ class FoodCreateView(CreateView):
     model = Item
     form_class = ItemForm
     template_name = "food/item-form.html"
-    success_url = reverse_lazy("food:index")
 
     def form_valid(self, form):
         form.instance.added_by = self.request.user

@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Item(models.Model):
@@ -12,8 +13,11 @@ class Item(models.Model):
         max_length=500,
         default="",
     )
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     def __str__(self) -> str:
         return self.item_name
 
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    def get_absolute_url(self):
+        return reverse("food:detail", kwargs={"pk": self.pk})
+    
